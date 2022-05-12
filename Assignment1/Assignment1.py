@@ -4,41 +4,60 @@ from Bio import Entrez
 from Bio import Medline
 import json
 import numpy as np
+import argparse as ap
+
 
 Entrez.api_key = 'b73a5ffde89ba2ae4feca63960fdac659009'
 Entrez.email = 'rie123@live.nl'
+#pmid = "30049270"
 
+# Function that obtains the references from pubmed based on a pubmed id
 def final_script(pmid):
-    # input is an pubmed id
-    # output is 10 xml articles based on refrences i hope.
     references = []
     k = 0
+    record = Entrez.elink(dbfrom="pubmed",
+                            db="pmc",
+                            LinkName="pubmed_pmc_refs",
+                            id=pmid,
+                            api_key='b73a5ffde89ba2ae4feca63960fdac659009')
 
-    links = Entrez.elink(dbfrom="pubmed", id=pmid, linkname="pubmed_pubmed")
-    record = Entrez.read(links)
+    record = Entrez.read(record)
     records = record[0]['LinkSetDb'][0]['Link']
-
     for link in records:
-        references.append(link['Id'])
-    k = np.random.randint(0,len(references) - 1)
-    k1 = k + 1
+        references.append("\'" + link['Id'] + "\'")
 
-    for item in references[k:k1]:
-        handle = Entrez.efetch(db="pubmed", id=item, retmode="xml")
-        record = Entrez.read(handle)
+    return references
+
+# Function that obtains and writes the xml file for a given pubmed id
+def fetcher(pmid_ref):
+    
+    handle = Entrez.efetch(db="pmc", id=pmid_ref, rettype="XML", retmode="text",
+                        api_key='b73a5ffde89ba2ae4feca63960fdac659009')
+
+    with open(f'output/{pmid_ref}.xml', 'wb') as file:
+        file.write(handle.read())
+        file.close()
         handle.close()
-        with open('output/'+ item + '.xml','w') as to_write:
-            to_write.write(json.dumps(record['PubmedArticle'][0]))
-        to_write.close()
-        print('Finnished with 1 ref')
+        print('Finnished')
 
+# Function that runs the fetcher process on multiple processors.
+def runner(pmid):
+    refs = final_script(pmid)
 
-nr = "1234567891"
-def multi_process():
+    refs = refs[:10]
+
     cpus = mp.cpu_count()
-    with mp.Pool(cpus) as pool:
-        results = pool.map(final_script, nr)
 
-        
-if __name__ == "__main__":       
-    multi_process()
+    with mp.Pool(cpus) as pool:
+        results = pool.map(fetcher, refs)
+
+if __name__ == "__main__":
+    argparser = ap.ArgumentParser(description="Script that downloads (default) 10 articles referenced by the given PubMed ID concurrently.")
+    argparser.add_argument("-n", action="store",
+                           dest="n", required=False, type=int,
+                           help="Number of references to download concurrently.")
+    argparser.add_argument("pubmed_id", action="store", type=str, nargs=1, help="Pubmed ID of the article to harvest for references to download.")
+    args = argparser.parse_args()
+    print("Getting: ", args.pubmed_id, args.n)
+
+    runner(args.pubmed_id)
