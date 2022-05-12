@@ -31,10 +31,12 @@ def final_script(pmid):
 # Function that obtains and writes the xml file for a given pubmed id
 def fetcher(pmid_ref):
     
+    title = pmid_ref.replace("\'","")
+
     handle = Entrez.efetch(db="pmc", id=pmid_ref, rettype="XML", retmode="text",
                         api_key='b73a5ffde89ba2ae4feca63960fdac659009')
 
-    with open(f'output/{pmid_ref}.xml', 'wb') as file:
+    with open(f'output/{title}.xml', 'wb') as file:
         file.write(handle.read())
         file.close()
         handle.close()
