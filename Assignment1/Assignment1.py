@@ -46,7 +46,10 @@ def fetcher(pmid_ref):
 def runner(pmid):
     refs = final_script(pmid)
 
-    refs = refs[:10]
+    try:
+        refs = refs[:10]
+    except: 
+        refs = refs[:len(refs)]
 
     cpus = mp.cpu_count()
 
