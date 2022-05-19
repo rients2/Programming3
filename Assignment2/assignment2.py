@@ -1,6 +1,13 @@
 import multiprocessing as mp
 from multiprocessing.managers import BaseManager, SyncManager
 import os, sys, time, queue
+import xml.etree.ElementTree as ET
+import pickle
+import Bio
+from Bio import Entrez
+from Bio import Medline
+import argparse as ap
+import numpy as np
 
 
 def make_server_manager(port, authkey):
@@ -82,9 +89,55 @@ def make_client_manager(ip, port, authkey):
     return manager
 
 
-def capitalize(word):
-    """Capitalizes the word you pass in and returns it"""
-    return word.upper()
+
+
+# Function that obtains the references from pubmed based on a pubmed id
+def final_script(pmid):
+    references = []
+    k = 0
+    record = Entrez.elink(dbfrom="pubmed",
+                            db="pmc",
+                            LinkName="pubmed_pmc_refs",
+                            id=pmid,
+                            api_key='b73a5ffde89ba2ae4feca63960fdac659009')
+
+    record = Entrez.read(record)
+    records = record[0]['LinkSetDb'][0]['Link']
+    for link in records:
+        references.append("\'" + link['Id'] + "\'")
+
+    return references
+
+def xml_parser(pubmed_id):
+    title = pubmed_id.replace("\'","")
+    old_tuple = ()
+    mytree = ET.parse(f'output/{title}.xml')
+    myroot = mytree.getroot()
+    for firstname, lastname in zip(myroot.iter('given-names'),myroot.iter('surname')):
+        full_name = [str(firstname.text) + ' ' + str(lastname.text)]
+        new_tuple = tuple(full_name)
+        old_tuple = old_tuple + new_tuple
+
+
+    with open(f'output/{title}.pickle', 'wb') as f:
+        pickle.dump(old_tuple, f)
+
+# Function that obtains and writes the xml file for a given pubmed id
+def fetcher(pmid_ref):
+    
+    title = pmid_ref.replace("\'","")
+
+    handle = Entrez.efetch(db="pmc", id=pmid_ref, rettype="XML", retmode="text",
+                        api_key='b73a5ffde89ba2ae4feca63960fdac659009')
+
+    with open(f'output/{title}.xml', 'wb') as file:
+        file.write(handle.read())
+        file.close()
+        handle.close()
+        
+
+    xml_parser(pubmed_id=pmid_ref)
+    print('Finnished')
 
 
 def runclient(num_processes):
@@ -125,17 +178,39 @@ def peon(job_q, result_q):
             print("sleepytime for", my_name)
             time.sleep(1)
 
+def runner(pmid):
+    refs = final_script(pmid)
 
+    try:
+        refs = refs[:10]
+    except: 
+        refs = refs[:len(refs)]
+
+    cpus = mp.cpu_count()
+
+    with mp.Pool(cpus) as pool:
+        results = pool.map(fetcher, refs)
 
 POISONPILL = "MEMENTOMORI"
 ERROR = "DOH"
 IP = ''
 PORTNUM = 9741
 AUTHKEY = b'whathasitgotinitspocketsesss?'
-data = ["Always", "look", "on", "the", "bright", "side", "of", "life!"]
+Entrez.api_key = 'b73a5ffde89ba2ae4feca63960fdac659009'
+Entrez.email = 'rie123@live.nl'
+pmid = "30049270"
+
 
 if __name__ == "__main__":
-    server = mp.Process(target=runserver, args=(capitalize, data))
+    argparser = ap.ArgumentParser(description="Script that downloads (default) 10 articles referenced by the given PubMed ID concurrently.")
+    argparser.add_argument("-n", action="store",
+                           dest="n", required=False, type=int,
+                           help="Number of references to download concurrently.")
+    argparser.add_argument("pubmed_id", action="store", type=str, nargs=1, help="Pubmed ID of the article to harvest for references to download.")
+    args = argparser.parse_args()
+    print("Getting: ", args.pubmed_id, args.n)
+
+    server = mp.Process(target=runserver, args=(runner, pmid))
     server.start()
     time.sleep(1)
     client = mp.Process(target=runclient, args=(4,))
