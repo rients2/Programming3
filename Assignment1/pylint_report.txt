@@ -1,0 +1,24 @@
+ ************* Module assignment1
+ assignment1.py:33: convention (C0303, trailing-whitespace, ) Trailing whitespace
+ assignment1.py:51: convention (C0303, trailing-whitespace, ) Trailing whitespace
+ assignment1.py:60: convention (C0301, line-too-long, ) Line too long (140/100)
+ assignment1.py:64: convention (C0301, line-too-long, ) Line too long (146/100)
+ assignment1.py:68: convention (C0304, missing-final-newline, ) Final newline missing
+ assignment1.py:1: convention (C0114, missing-module-docstring, ) Missing module docstring
+ assignment1.py:15: convention (C0116, missing-function-docstring, final_script) Missing function or method docstring
+ assignment1.py:17: warning (W0612, unused-variable, final_script) Unused variable 'k'
+ assignment1.py:32: convention (C0116, missing-function-docstring, fetcher) Missing function or method docstring
+ assignment1.py:46: convention (C0116, missing-function-docstring, runner) Missing function or method docstring
+ assignment1.py:51: warning (W0702, bare-except, runner) No exception type(s) specified
+ assignment1.py:57: warning (W0612, unused-variable, runner) Unused variable 'results'
+ assignment1.py:2: warning (W0611, unused-import, ) Unused import Bio
+ assignment1.py:4: warning (W0611, unused-import, ) Unused Medline imported from Bio
+ assignment1.py:5: warning (W0611, unused-import, ) Unused import json
+ assignment1.py:6: warning (W0611, unused-import, ) Unused numpy imported as np
+ assignment1.py:5: convention (C0411, wrong-import-order, ) standard import "import json" should be placed before "import Bio"
+ assignment1.py:7: convention (C0411, wrong-import-order, ) standard import "import argparse as ap" should be placed before "import Bio"
+ 
+ ------------------------------------------------------------------
+ Your code has been rated at 5.71/10 (previous run: 9.57/10, -3.85)
+ 
+ 
