@@ -28,7 +28,7 @@ def make_server_manager(port, authkey):
     print('Server started at port %s' % port)
     return manager
 
-def runserver(fn, data, PORTNUM):
+def runserver(fn, data, PORTNUM, amount=10):
     # Start a shared manager server and access its queues
     manager = make_server_manager(PORTNUM, b'whathasitgotinitspocketsesss?')
     shared_job_q = manager.get_job_q()
@@ -40,7 +40,7 @@ def runserver(fn, data, PORTNUM):
     
     print("Sending data!")
     for d in data:
-        shared_job_q.put({'fn' : fn, 'arg' : d})
+        shared_job_q.put({'fn' : fn, 'arg' : d, 'amount': amount})
     
     time.sleep(2)  
     
@@ -184,11 +184,11 @@ def peon(job_q, result_q):
             print("sleepytime for", my_name)
             time.sleep(1)
 
-def runner(pmid):
+def runner(pmid, amount):
     refs = final_script(pmid)
 
     try:
-        refs = refs[:10]
+        refs = refs[:amount]
     except: 
         refs = refs[:len(refs)]
 
@@ -224,7 +224,7 @@ if __name__ == "__main__":
     print("Getting: ", args.pubmed_id, args.n, args.a, args.c, args.s)
 
 
-    server = mp.Process(target=runserver, args=(runner, args.pubmed_id, args.c))
+    server = mp.Process(target=runserver, args=(runner, args.pubmed_id, args.a, args.c))
     server.start()
     time.sleep(1)
     client = mp.Process(target=runclient, args=(args.s,args.c,args.n))
