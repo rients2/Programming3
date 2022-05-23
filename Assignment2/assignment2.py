@@ -31,7 +31,7 @@ def make_server_manager(port, authkey):
     print('Server started at port %s' % port)
     return manager
 
-def runserver(fn, data):
+def runserver(fn, data, PORTNUM):
     # Start a shared manager server and access its queues
     manager = make_server_manager(PORTNUM, b'whathasitgotinitspocketsesss?')
     shared_job_q = manager.get_job_q()
@@ -109,18 +109,25 @@ def final_script(pmid):
     return references
 
 def xml_parser(pubmed_id):
-    title = pubmed_id.replace("\'","")
-    old_tuple = ()
-    mytree = ET.parse(f'output/{title}.xml')
-    myroot = mytree.getroot()
-    for firstname, lastname in zip(myroot.iter('given-names'),myroot.iter('surname')):
-        full_name = [str(firstname.text) + ' ' + str(lastname.text)]
-        new_tuple = tuple(full_name)
-        old_tuple = old_tuple + new_tuple
+        title = pubmed_id.replace("\'","")
+        old_tuple = ()
+
+        try:
+            mytree = ET.parse(f'output/{title}.xml')
+            myroot = mytree.getroot()
+            for firstname, lastname in zip(myroot.iter('given-names'),myroot.iter('surname')):
+                full_name = [str(firstname.text) + ' ' + str(lastname.text)]
+                new_tuple = tuple(full_name)
+                old_tuple = old_tuple + new_tuple
 
 
-    with open(f'output/{title}.pickle', 'wb') as f:
-        pickle.dump(old_tuple, f)
+            with open(f'output/{title}.pickle', 'wb') as f:
+                pickle.dump(old_tuple, f)
+        except:
+            with open(f'output/{title}.pickle', 'wb') as f:
+                pickle.dump(old_tuple, f)
+                print('nothing written.')
+
 
 # Function that obtains and writes the xml file for a given pubmed id
 def fetcher(pmid_ref):
@@ -135,12 +142,14 @@ def fetcher(pmid_ref):
         file.close()
         handle.close()
         
+    try:
+        xml_parser(pubmed_id=pmid_ref)
+        print('Finnished')
+    except:
+        print('pmid not found.')
 
-    xml_parser(pubmed_id=pmid_ref)
-    print('Finnished')
 
-
-def runclient(num_processes):
+def runclient(IP,PORTNUM,num_processes):
     manager = make_client_manager(IP, PORTNUM, AUTHKEY)
     job_q = manager.get_job_q()
     result_q = manager.get_result_q()
@@ -193,27 +202,42 @@ def runner(pmid):
 
 POISONPILL = "MEMENTOMORI"
 ERROR = "DOH"
-IP = ''
-PORTNUM = 9741
+#IP = 'nuc408'
+#PORTNUM = 9741
 AUTHKEY = b'whathasitgotinitspocketsesss?'
 Entrez.api_key = 'b73a5ffde89ba2ae4feca63960fdac659009'
 Entrez.email = 'rie123@live.nl'
-pmid = "30049270"
+# 
 
 
 if __name__ == "__main__":
     argparser = ap.ArgumentParser(description="Script that downloads (default) 10 articles referenced by the given PubMed ID concurrently.")
     argparser.add_argument("-n", action="store",
-                           dest="n", required=False, type=int,
+                           dest="n", required=True, type=int,
+                           help="number_of_peons_per_client")
+    argparser.add_argument("-a", action="store",
+                           dest="a", required=False, type=int,
                            help="Number of references to download concurrently.")
+    argparser.add_argument("-c", action="store",
+                           dest="c", required=True, type=int,
+                           help="Port nr")
+    argparser.add_argument("-s", action="store",
+                           dest="s", required=True, type=str,
+                           help="Host nr")
     argparser.add_argument("pubmed_id", action="store", type=str, nargs=1, help="Pubmed ID of the article to harvest for references to download.")
     args = argparser.parse_args()
-    print("Getting: ", args.pubmed_id, args.n)
+    print("Getting: ", args.pubmed_id, args.n, args.a, args.c, args.s)
 
-    server = mp.Process(target=runserver, args=(runner, pmid))
+# IP = args.s
+# PORTNUM = args.c
+# pmid = args.pubmed_id
+# num_processes = args.n
+
+
+    server = mp.Process(target=runserver, args=(runner, args.pubmed_id, args.c))
     server.start()
     time.sleep(1)
-    client = mp.Process(target=runclient, args=(4,))
+    client = mp.Process(target=runclient, args=(args.s,args.c,args.n))
     client.start()
     server.join()
     client.join()
