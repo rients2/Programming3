@@ -3,11 +3,8 @@ from multiprocessing.managers import BaseManager, SyncManager
 import os, sys, time, queue
 import xml.etree.ElementTree as ET
 import pickle
-import Bio
 from Bio import Entrez
-from Bio import Medline
 import argparse as ap
-import numpy as np
 
 
 def make_server_manager(port, authkey):
@@ -200,14 +197,12 @@ def runner(pmid):
     with mp.Pool(cpus) as pool:
         results = pool.map(fetcher, refs)
 
+
 POISONPILL = "MEMENTOMORI"
 ERROR = "DOH"
-#IP = 'nuc408'
-#PORTNUM = 9741
 AUTHKEY = b'whathasitgotinitspocketsesss?'
 Entrez.api_key = 'b73a5ffde89ba2ae4feca63960fdac659009'
 Entrez.email = 'rie123@live.nl'
-# 
 
 
 if __name__ == "__main__":
@@ -227,11 +222,6 @@ if __name__ == "__main__":
     argparser.add_argument("pubmed_id", action="store", type=str, nargs=1, help="Pubmed ID of the article to harvest for references to download.")
     args = argparser.parse_args()
     print("Getting: ", args.pubmed_id, args.n, args.a, args.c, args.s)
-
-# IP = args.s
-# PORTNUM = args.c
-# pmid = args.pubmed_id
-# num_processes = args.n
 
 
     server = mp.Process(target=runserver, args=(runner, args.pubmed_id, args.c))
