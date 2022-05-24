@@ -125,10 +125,10 @@ def xml_parser(pubmed_id):
                 old_tuple = old_tuple + new_tuple
 
 
-            with open(f'output/{title}.pickle', 'wb') as f:
+            with open(f'output/{title}.authors.pickle', 'wb') as f:
                 pickle.dump(old_tuple, f)
         except:
-            with open(f'output/{title}.pickle', 'wb') as f:
+            with open(f'output/{title}.authors.pickle', 'wb') as f:
                 pickle.dump(old_tuple, f)
                 print('nothing written.')
 
