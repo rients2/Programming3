@@ -7,6 +7,13 @@ from Bio import Entrez
 import argparse as ap
 
 
+POISONPILL = "MEMENTOMORI"
+ERROR = "DOH"
+AUTHKEY = b'whathasitgotinitspocketsesss?'
+Entrez.api_key = 'b73a5ffde89ba2ae4feca63960fdac659009'
+Entrez.email = 'rie123@live.nl'
+
+
 def make_server_manager(port, authkey):
     """ Create a manager for the server, listening on the given port.
         Return a manager object with get_job_q and get_result_q methods.

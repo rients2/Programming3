@@ -27,21 +27,30 @@ if __name__ == "__main__":
     argparser.add_argument("-a", action="store",
                            dest="a", required=False, type=int,
                            help="Number of references to download concurrently.")
-    argparser.add_argument("-c", action="store",
-                           dest="c", required=True, type=int,
+    argparser.add_argument("--port", action="store",
+                           dest="port", required=True, type=int,
                            help="Port nr")
-    argparser.add_argument("-s", action="store",
-                           dest="s", required=True, type=str,
+    argparser.add_argument("--host", action="store",
+                           dest="host", required=True, type=str,
                            help="Host nr")
+
+    argparser.add_argument("-s", action="store_true",
+                           dest="s", required=False,help="server")
+    argparser.add_argument("-c", action="store_true",
+                           dest="c",help="client")
+
     argparser.add_argument("pubmed_id", action="store", type=str, nargs=1, help="Pubmed ID of the article to harvest for references to download.")
     args = argparser.parse_args()
-    print("Getting: ", args.pubmed_id, args.n, args.a, args.c, args.s)
+    print("Getting: ", args.pubmed_id, args.n, args.a, args.c, args.s, args.host, args.port)
 
 
-    server = mp.Process(target=runserver, args=(runner, args.pubmed_id, args.c))
-    server.start()
-    time.sleep(1)
-    client = mp.Process(target=runclient, args=(args.s,args.c,args.n))
-    client.start()
-    server.join()
-    client.join()
+
+    if args.s:
+        server = mp.Process(target=runserver, args=(runner, args.pubmed_id, args.port))
+        server.start()
+        time.sleep(1)
+    if args.c:
+        client = mp.Process(target=runclient, args=(args.host,args.port,args.n))
+        client.start()
+        server.join()
+        client.join()
