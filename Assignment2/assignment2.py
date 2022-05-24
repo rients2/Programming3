@@ -1,7 +1,4 @@
-from functions import run_workers
-from functions import runner
-from functions import runserver
-from functions import runclient
+import functions as func
 
 import multiprocessing as mp
 from multiprocessing.managers import BaseManager, SyncManager
@@ -10,13 +7,6 @@ import xml.etree.ElementTree as ET
 import pickle
 from Bio import Entrez
 import argparse as ap
-
-
-POISONPILL = "MEMENTOMORI"
-ERROR = "DOH"
-AUTHKEY = b'whathasitgotinitspocketsesss?'
-Entrez.api_key = 'b73a5ffde89ba2ae4feca63960fdac659009'
-Entrez.email = 'rie123@live.nl'
 
 
 if __name__ == "__main__":
@@ -46,11 +36,11 @@ if __name__ == "__main__":
 
 
     if args.s:
-        server = mp.Process(target=runserver, args=(runner, args.pubmed_id, args.port))
+        server = mp.Process(target=func.runserver, args=(func.runner, args.pubmed_id, args.port))
         server.start()
         time.sleep(1)
     if args.c:
-        client = mp.Process(target=runclient, args=(args.host,args.port,args.n))
+        client = mp.Process(target=func.runclient, args=(args.host,args.port,args.n))
         client.start()
         server.join()
         client.join()
