@@ -1,3 +1,4 @@
+"""functions.py: this file has the functions"""
 import multiprocessing as mp
 from multiprocessing.managers import BaseManager, SyncManager
 import os, sys, time, queue

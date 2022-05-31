@@ -1,3 +1,4 @@
+"""assignment2.py: this file gets authors and saves them as pickle"""
 import functions as func
 
 import multiprocessing as mp
