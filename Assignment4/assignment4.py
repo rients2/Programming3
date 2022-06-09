@@ -2,12 +2,13 @@
 import argparse as ap
 import sys
 
-argparser = ap.ArgumentParser(description="adjksdns")
+argparser = ap.ArgumentParser(description="an arparser")
 argparser.add_argument("-kmar", action="store",
                            dest="kmar", required=True, type=int,
                            help="the arguments")
 
-kmars = ap.kmar
+args = argparser.parse_args()
+kmars = str(args.kmar)
 
 path = '/students/2021-2022/master/Rients_DSLS/output/'
     
