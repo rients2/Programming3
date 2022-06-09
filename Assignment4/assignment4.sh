@@ -18,9 +18,8 @@ file2=/data/dataprocessing/MinIONData/MG5267/MG5267_TGACCA_L008_R2_001_BC24EVACX
 
 seq 25 2 27 | parallel -j16 velveth ${folder}{} {} -fastq -separate -longPaired ${file1} ${file2}
 seq 25 2 27 | parallel -j16 velvetg ${folder}{}
-
-seq 25 2 27 | python3 assignment4.py -kmar {} >> output/kmars.csv
+seq 25 2 27 | parallel -j16 python3 assignment4.py -kmar {} >> output/kmars.csv
 
 python3 assignment42.py
 
-# rm -r $folder*
+rm -r $folder*
