@@ -1,0 +1,11 @@
+question_nr,answers,explain
+1,9704,9704
+2,11.490524386574391,11.490524386574391
+3,GO:0003700|GO:0006355,GO:0003700|GO:0006355
+4,131.73178916966685,131.73178916966685
+5,"['IPR027417', 'IPR002347', 'IPR003439', 'IPR036388', 'IPR036259', 'IPR003593', 'IPR036390', 'IPR036291', 'IPR000515', 'IPR001789']","['IPR027417', 'IPR002347', 'IPR003439', 'IPR036388', 'IPR036259', 'IPR003593', 'IPR036390', 'IPR036291', 'IPR000515', 'IPR001789']"
+6,"['IPR027417', 'IPR036259', 'IPR020846', 'IPR029058', 'IPR036388', 'IPR000182', 'IPR013785', 'IPR036291', 'IPR029063', 'IPR015424']","['IPR027417', 'IPR036259', 'IPR020846', 'IPR029058', 'IPR036388', 'IPR000182', 'IPR013785', 'IPR036291', 'IPR029063', 'IPR015424']"
+7,"['domain', 'superfamily', 'protein', 'C-terminal', 'site', 'hydrolase', 'DNA-binding', 'N-terminal', 'conserved', 'family']","['domain', 'superfamily', 'protein', 'C-terminal', 'site', 'hydrolase', 'DNA-binding', 'N-terminal', 'conserved', 'family']"
+8,"['GpE', 'choline', 'TldD', 'PrcA', 'glycoprotein', 'DUF3181', '49kDa', 'BioU-like', 'DUF6440', 'toxin-activating']","['GpE', 'choline', 'TldD', 'PrcA', 'glycoprotein', 'DUF3181', '49kDa', 'BioU-like', 'DUF6440', 'toxin-activating']"
+9,"['superfamily', 'protein', 'domain', 'subunit', 'family', 'Ribosomal', 'hydrolase', 'synthase', 'transporter', 'Protein']","['superfamily', 'protein', 'domain', 'subunit', 'family', 'Ribosomal', 'hydrolase', 'synthase', 'transporter', 'Protein']"
+10,-0.03565413726279607,-0.03565413726279607
