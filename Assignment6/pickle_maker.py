@@ -61,7 +61,7 @@ def databaser(files):
 
 def runner(files):
     # Function that does the multiprocessing.
-    cpus = 48
+    cpus = 16
     with mp.Pool(cpus) as pool:
         results = pool.map(databaser, files)
 
