@@ -66,7 +66,6 @@ def runner(files):
         results = pool.map(databaser, files)
 
 if __name__ == "__main__":
-    Full_df = pd.DataFrame()
     path = '/data/dataprocessing/NCBI/PubMed/'
     files = glob.glob(path + '*.xml')
     runner(files)
