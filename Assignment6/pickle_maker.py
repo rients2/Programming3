@@ -1,7 +1,6 @@
 """assignment6.py: this file gets pubmed ids and authors and saves them as pickles"""
 import glob
 import pickle
-from tokenize import Name
 import pandas as pd
 import networkx as nx
 import multiprocessing as mp
@@ -30,10 +29,11 @@ def article_author(myroot):
                             # Getting the authors last name
                             lastname = second_child[k2][0].text
                             # Not all authors have their first name listed.
+                            # Mostly when it is a company author.
                             try:
                                 firstname = second_child[k2][1].text
                             except:
-                                firstname = '-'
+                                firstname = ''
                             # Create a full name and append it to a list
                             try:
                                 name = str(firstname) + ' ' + str(lastname)
@@ -45,6 +45,56 @@ def article_author(myroot):
     # Turn both lists created into a dataframe.                                                   
     db = pd.DataFrame((pubmed_id, full_name)).T
 
+    return db
+
+# Currently not used when running the file.
+def citation_graph(myroot):
+
+    #Function that creates a dataframe with all papers and their references.
+    # Can be used to create a citation graph/network.
+
+    # Currently only obtains papers if they cite another paper not those without.
+    
+    references = []
+    pubmed_id = []
+    # First loop over every article in the xml file.
+    for k in range(0, len(myroot)):
+        # Then get the references which is in the reference list tag.
+        for ref_child in myroot[k][1]:
+            if ref_child.tag ==  'ReferenceList':
+                # Then add the reference and the corresponing pubmed id to lists.
+                for ref_child2 in ref_child:
+                    reference = ref_child2[1][0].text
+                    pubmed_id.append(myroot[k][0][0].text)
+
+                    references.append(reference)
+    # combine the lists into a dataframe
+    db = pd.DataFrame((pubmed_id, references)).T
+
+    return db
+
+# Currently not used when running the file.
+def keyword_collector(myroot):
+    # Function that creates a dataframe with all the pubmedids and their keywords. 
+    # Known issue: Only obtains pubmedIDs if they have keywords. If they dont they get left out.
+
+    keyword_list = []
+    pubmed_id = []
+    # Looping over all the articles.
+    for k in range(0, len(myroot)):
+        # Finding the location of keywords.
+        for keyword_child in myroot[k][0]:
+            if keyword_child.tag == 'MeshHeadingList':
+                # Creating a list to store keywords per article.
+                indv_list = []
+                # Getting the individual keywords per article
+                for keyword_child2 in keyword_child:
+                    indv_list.append(keyword_child2[0].text)
+                # Adding the keywords to a larger list.
+                keyword_list.append(indv_list)
+                # Adding the pubmedid they belong to.
+                pubmed_id.append(myroot[k][0][0].text)
+    db = pd.DataFrame((pubmed_id, keyword_list)).T
     return db
 
 
@@ -67,5 +117,6 @@ def runner(files):
 
 if __name__ == "__main__":
     path = '/data/dataprocessing/NCBI/PubMed/'
+    # Obtaining a list of all the stored xml files.
     files = glob.glob(path + '*.xml')
     runner(files)
