@@ -1,4 +1,4 @@
-"""assignment6.py: this file gets pubmed ids and list of authors, keywords and references"""
+"""pickle_maker_2.0.py: this file gets pubmed ids and list of authors, keywords and references"""
 import glob
 import pandas as pd
 import argparse as ap
