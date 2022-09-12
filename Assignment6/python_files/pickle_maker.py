@@ -1,4 +1,4 @@
-"""assignment6.py: this file gets authors and their corresponding pubmedId and saves them as pickles"""
+"""pickle_maker.py: this file gets authors and their corresponding pubmedId and saves them as pickles"""
 import glob
 import pandas as pd
 import argparse as ap
