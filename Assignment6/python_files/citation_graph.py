@@ -40,6 +40,7 @@ full_frame_refs = full_frame[full_frame['Refs'].isna() == False]
 # Creating a citation graph
 cite_graph = nx.Graph()
 
+# change keywords to Authors to get the authors as attributes
 for l, p, k in zip(full_frame_refs['pubmedID'], full_frame_refs['Refs'], full_frame_refs['keywords']):
     try:
         cite_graph.add_node(l, keywords=k)

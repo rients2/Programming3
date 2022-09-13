@@ -8,4 +8,6 @@
 #SBATCH --job-name=Assignment6Rients
 #SBATCH --partition=assemblix
 
-python3 python_files/question5.py
+
+python3 python_files/question1.py >> output/answers.csv
+python3 python_files/question5.py >> output/answers.csv
