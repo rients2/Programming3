@@ -9,5 +9,9 @@
 #SBATCH --partition=assemblix
 
 
+python3 python_files/pickle_maker.py -cpu 16
 python3 python_files/question1.py >> output/answers.csv
+
+python3 python_files/pickle_maker_2.0.py -cpu 16
+python3 python_files/citation_graph.py
 python3 python_files/question5.py >> output/answers.csv

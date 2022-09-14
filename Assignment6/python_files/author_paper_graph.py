@@ -16,11 +16,11 @@ nr = 0
 for pickle in pickles:
     # Creating a pandas dataframe from each pickle
     df = pd.read_pickle(pickle)
-    nr += 1 
+#   nr += 1 
     # Creating 1 graph from the dataframe.
     for l, p in zip(df[0],df[1]):
         full_graph.add_edge(l,p)
-    print('Added nodes to graph', nr)
+#    print('Added nodes to graph', nr)
 
 
 # Creating a 4.3 gb graph.

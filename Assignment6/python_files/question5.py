@@ -25,10 +25,10 @@ for n1, n2, k in list(cite_sg0.edges(data=True)):
         #print(' node1: ', cite_sg0.nodes[n1]['keywords'],'\n', 'node2: ', cite_sg0.nodes[n2]['keywords'], '\n')
         key1 = cite_sg0.nodes[n1]['keywords']
         key2 = cite_sg0.nodes[n2]['keywords']
-        try:
+
+        # Some of the keywords are floating nans for some reason.
+        if key1 == key1 and key2 == key2:
             matches.append(len(set(key1).intersection(key2)) / max(len(set(key1)),len(set(key2))))
-        except:
-            print('key is float?')
 
 cited_ans = int(np.mean(matches)*100)
 
@@ -49,10 +49,9 @@ for n in range(0,25000):
     if cite_sg0.nodes[n1] != {} and cite_sg0.nodes[n2] != {}:
         n_key1 = cite_sg0.nodes[n1]['keywords']
         n_key2 = cite_sg0.nodes[n2]['keywords']
-        try:
+        
+        if n_key1 == n_key1 and n_key2 == n_key2:
             no_matches.append(len(set(n_key1).intersection(n_key2)) / max(len(set(n_key1)),len(set(n_key2))))
-        except:
-            print('key is float here as well')
 
 non_cite_ans = int(np.mean(no_matches)*100)
 

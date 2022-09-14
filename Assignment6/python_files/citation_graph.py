@@ -16,7 +16,7 @@ ddf2 = dd
 ddf_list = []
 
 # small frame
-pickles = pickles[:1]
+#pickles = pickles[:50]
 
 for pickle in pickles:
     # Creating a pandas dataframe from each pickle
@@ -26,9 +26,9 @@ for pickle in pickles:
     ddf = dd.from_pandas(df, npartitions=8)
     ddf_list.append(ddf)   
     nr = len(ddf_list)
-    print('list size: ', nr, '/1062')
+#    print('list size: ', nr, '/1062')
 
-print('Combining dataframes. ETA: ~20 sec')
+#print('Combining dataframes')
 full_frame = dd.multi.concat(ddf_list)
 # ~2 min
 
@@ -40,18 +40,19 @@ full_frame_refs = full_frame[full_frame['Refs'].isna() == False]
 # Creating a citation graph
 cite_graph = nx.Graph()
 
+
 # change keywords to Authors to get the authors as attributes
 for l, p, k in zip(full_frame_refs['pubmedID'], full_frame_refs['Refs'], full_frame_refs['keywords']):
     try:
         cite_graph.add_node(l, keywords=k)
     except:
-        print('Error')
+        print('Error with adding a node')
     for p2 in p:
         cite_graph.add_edge(l,p2)
 
 
 # Writing the graph to a pickle file.
-#nx.write_gpickle(cite_graph, path='/students/2021-2022/master/Rients_DSLS/pickle_graph/cite_graph.pkl')
+nx.write_gpickle(cite_graph, path='/students/2021-2022/master/Rients_DSLS/pickle_graph/cite_graph.pkl')
 
-nx.write_gpickle(cite_graph, path='/students/2021-2022/master/Rients_DSLS/pickle_graph/cite_small.pkl')
+#nx.write_gpickle(cite_graph, path='/students/2021-2022/master/Rients_DSLS/pickle_graph/cite_small.pkl')
 
