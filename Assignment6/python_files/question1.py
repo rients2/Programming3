@@ -30,4 +30,4 @@ total = len(full_frame)
 uniques = full_frame[0].nunique().compute()
 average_authors = round(total / uniques,2)
 
-sys.stdout.write(f"How large a group of co-authors does the average publication have? ,{average_authors}")
+sys.stdout.write(f"How large a group of co-authors does the average publication have? ,{average_authors}\n")

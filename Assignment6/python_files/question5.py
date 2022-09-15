@@ -57,5 +57,5 @@ non_cite_ans = int(np.mean(no_matches)*100)
 
 ans_string = 'Yes '  + str(cited_ans) + '% is significantly different than ' + str(non_cite_ans) + '%'
 
-sys.stdout.write(f"Is there a correlation between citations and the number of keywords that papers share? , {ans_string}")
+sys.stdout.write(f"Is there a correlation between citations and the number of keywords that papers share? , {ans_string}\n")
     
